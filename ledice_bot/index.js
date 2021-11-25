@@ -5,6 +5,32 @@ const msg = require('./get-messages')
 const config = require('./config');
 const send = require('./send-message');
 
+const express = require('express');
+const app = express();
+const router = express.Router();
+const path = require('path');
+
+
+router.get('/', function(req, res){
+  res.send('HELLO');
+});
+app.use('/', router);
+
+
+router.get('/lol', function(req, res){
+  res.sendFile(path.join(__dirname, '/lol.html'));
+});
+app.use('/lol', router);
+
+app.use(function(req, res, next) {
+    res.status(404);
+    res.sendFile(__dirname + '/404.html');
+});
+
+let server = app.listen(3000, function(){
+  console.log("App server is running on port 3000");
+});
+
 function login() {
   let sid;
   const data = JSON.stringify({
@@ -42,7 +68,6 @@ try {
   console.log(err)
 }
 
-
 let current = JSON.parse(fs.readFileSync('./messages.json')).messageId
 setInterval(() => {
   try {
@@ -57,16 +82,3 @@ setInterval(() => {
   }
   
 }, 3000);
-
-
-
-
-
-
-// POST /api/chat-thread-messages HTTP/2
-// Host: aminoapps.com
-// Cookie: sid=AnsiMSI6IG51bGwsICIwIjogMiwgIjMiOiAwLCAiMiI6ICI4NWIxY2NjYS1kMjc0LTQ1MDEtYTdmOC04MDgzNDRiZDdhMTMiLCAiNSI6IDE2Mzc2ODg4OTksICI0IjogIjIwMS4xMzEuMjQxLjY5IiwgIjYiOiA0MDB934Jq12uCUOVsdzLxh13p6yn7prQ
-// Content-Length: 115
-// Content-Type: application/json
-// X-Requested-With: xmlhttprequest
-
